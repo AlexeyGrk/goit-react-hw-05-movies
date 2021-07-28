@@ -12,9 +12,13 @@ const HomePage = () => {
 
   useEffect(() => {
     if (popularMovies.length === 0) {
-      getPopularMovies().then((data) => {
-        setPopularMovies((prevState) => [...data, ...prevState]);
-      });
+      try {
+        getPopularMovies().then((data) => {
+          setPopularMovies((prevState) => [...data, ...prevState]);
+        });
+      } catch (error) {
+        return error.message;
+      }
     }
   }, [popularMovies.length]);
 

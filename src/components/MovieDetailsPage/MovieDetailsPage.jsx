@@ -1,11 +1,5 @@
-import { useState, useEffect } from "react";
-import {
-  Switch,
-  Route,
-  useRouteMatch,
-  useHistory,
-  useLocation,
-} from "react-router-dom";
+import { useState, useEffect, lazy, Suspense, useRef } from "react";
+import { Switch, Route, useRouteMatch, useHistory } from "react-router-dom";
 import { NavigationLink } from "../Navigation/Navigation.styled";
 import { useParams } from "react-router-dom";
 import {
@@ -19,17 +13,21 @@ import {
   MovieDetailsPageTitle,
 } from "./MovieDetailsPage.styled";
 import { getMovieById } from "../../services/apiFetchMovies";
-import Cast from "../Cast/Cast";
-import Reviews from "../Reviews/Reviews";
+
+const Cast = lazy(() => import("../Cast/Cast" /* webpackChunkName: "cast" */));
+const Reviews = lazy(() =>
+  import("../Reviews/Reviews" /* webpackChunkName: "reviews" */)
+);
 const MovieDetailsPage = () => {
   const { url, path } = useRouteMatch();
-  //   const history = useHistory();
-  //   console.log(history);
-  //   const location = useLocation();
-  //   console.log(location);
-
+  const routerState = useRef(null);
+  const history = useHistory();
   const { movieId } = useParams();
   const [movieInfo, setMovieInfo] = useState("");
+  const handleGoBack = () => {
+    const url = routerState.current ? `/?${routerState.current.params}` : `/`;
+    history.push(url);
+  };
 
   useEffect(() => {
     try {
@@ -41,6 +39,7 @@ const MovieDetailsPage = () => {
 
   return (
     <>
+      <button onClick={handleGoBack}>Go Back</button>
       <MovieDetailsPageContainer>
         {movieInfo && (
           <MovieDetailsPageImage
@@ -77,14 +76,16 @@ const MovieDetailsPage = () => {
         <NavigationLink to={`${url}/cast`}>Cast</NavigationLink>
         <NavigationLink to={`${url}/reviews`}>Reviews</NavigationLink>
       </MovieDetailsPageCastAndCommentsContainer>
-      <Switch>
-        <Route path={`/movies/${movieId}/cast`}>
-          <Cast movieId={movieId}></Cast>
-        </Route>
-        <Route path={`${path}/reviews`}>
-          <Reviews movieId={movieId}></Reviews>
-        </Route>
-      </Switch>
+      <Suspense fallback={<h1> Идет загрузка...</h1>}>
+        <Switch>
+          <Route path={`/movies/${movieId}/cast`}>
+            <Cast movieId={movieId}></Cast>
+          </Route>
+          <Route path={`${path}/reviews`}>
+            <Reviews movieId={movieId}></Reviews>
+          </Route>
+        </Switch>
+      </Suspense>
     </>
   );
 };
