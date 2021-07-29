@@ -1,5 +1,11 @@
 import { useState, useEffect, lazy, Suspense, useRef } from "react";
-import { Switch, Route, useRouteMatch, useHistory } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  useRouteMatch,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 import { NavigationLink } from "../Navigation/Navigation.styled";
 import { useParams } from "react-router-dom";
 import {
@@ -22,12 +28,26 @@ const MovieDetailsPage = () => {
   const { url, path } = useRouteMatch();
   const routerState = useRef(null);
   const history = useHistory();
+  const location = useLocation();
   const { movieId } = useParams();
   const [movieInfo, setMovieInfo] = useState("");
+
   const handleGoBack = () => {
-    const url = routerState.current ? `/?${routerState.current.params}` : `/`;
+    const url = routerState.current
+      ? // ? `/?${routerState.current?.params.inputValue}`
+        `/movies`
+      : `/`;
     history.push(url);
   };
+  console.log("DetailstPage", history);
+
+  history.state = routerState.current?.params.inputValue;
+  useEffect(() => {
+    if (!routerState.current) {
+      routerState.current = location.state;
+    }
+  }, [history, location.state]);
+  // console.log(routerState.current?.params.inputValue);
 
   useEffect(() => {
     try {

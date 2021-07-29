@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   FindMovieContainer,
   FindMovieForm,
@@ -13,11 +13,22 @@ import { getMoviesByWord } from "../../services/apiFetchMovies";
 const MoviesPage = (props) => {
   const [inputValue, setInputValue] = useState("");
   const [films, setFilms] = useState([]);
+  const history = useHistory();
 
   const sumbitForm = (e) => {
+    setInputValue("");
     e.preventDefault();
     setInputValue(e.target.elements.inputValue.value);
   };
+  console.log("MoviesPage", history.state);
+
+  useEffect(() => {
+    if (history.state) {
+      setInputValue(history.state);
+
+      getMoviesByWord(history.state).then((data) => setFilms(data));
+    }
+  }, [history.state]);
   useEffect(() => {
     if (inputValue === "") {
       return;
@@ -35,13 +46,22 @@ const MoviesPage = (props) => {
           autocomplete="off"
           placeholder="Enter film"
         ></FindMovieInput>
+
         <FindMovieSubmitButton>Search</FindMovieSubmitButton>
       </FindMovieForm>
       <FindMovieList>
         {films.map((film) => {
           console.log(film);
           return (
-            <Link to={`/movies/${film.id}`} key={film.id}>
+            <Link
+              to={{
+                pathname: `/movies/${film.id}`,
+                state: {
+                  params: { inputValue },
+                },
+              }}
+              key={film.id}
+            >
               <FindMovieItem>{film.title}</FindMovieItem>
             </Link>
           );
