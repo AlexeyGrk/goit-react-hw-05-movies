@@ -37,11 +37,11 @@ const MovieDetailsPage = () => {
     history.push(url);
   };
 
-  history.state = routerState.current?.params.inputValue;
   useEffect(() => {
     if (!routerState.current) {
       routerState.current = location.state;
     }
+    history.state = routerState.current?.params.inputValue;
   }, [history, location.state]);
 
   useEffect(() => {

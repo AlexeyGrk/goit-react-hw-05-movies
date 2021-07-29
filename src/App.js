@@ -11,6 +11,7 @@ const Movies = lazy(() =>
 const MoviesDetails = lazy(() =>
   import("./views/MoviesDetails" /* webpackChunkName: "movies-details" */)
 );
+
 function App() {
   return (
     <div className="App">
