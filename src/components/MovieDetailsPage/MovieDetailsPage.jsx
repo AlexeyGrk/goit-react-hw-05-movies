@@ -33,13 +33,9 @@ const MovieDetailsPage = () => {
   const [movieInfo, setMovieInfo] = useState("");
 
   const handleGoBack = () => {
-    const url = routerState.current
-      ? // ? `/?${routerState.current?.params.inputValue}`
-        `/movies`
-      : `/`;
+    const url = routerState.current ? `/movies` : `/`;
     history.push(url);
   };
-  console.log("DetailstPage", history);
 
   history.state = routerState.current?.params.inputValue;
   useEffect(() => {
@@ -47,7 +43,6 @@ const MovieDetailsPage = () => {
       routerState.current = location.state;
     }
   }, [history, location.state]);
-  // console.log(routerState.current?.params.inputValue);
 
   useEffect(() => {
     try {

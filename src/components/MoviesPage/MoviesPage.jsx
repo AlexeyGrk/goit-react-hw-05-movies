@@ -20,7 +20,6 @@ const MoviesPage = (props) => {
     e.preventDefault();
     setInputValue(e.target.elements.inputValue.value);
   };
-  console.log("MoviesPage", history.state);
 
   useEffect(() => {
     if (history.state) {
@@ -51,7 +50,6 @@ const MoviesPage = (props) => {
       </FindMovieForm>
       <FindMovieList>
         {films.map((film) => {
-          console.log(film);
           return (
             <Link
               to={{
