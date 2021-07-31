@@ -12,6 +12,7 @@ import { getMoviesByWord } from "../../services/apiFetchMovies";
 
 const MoviesPage = () => {
   const [inputValue, setInputValue] = useState("");
+
   const [films, setFilms] = useState([]);
   const history = useHistory();
 
@@ -19,12 +20,13 @@ const MoviesPage = () => {
     setInputValue("");
 
     e.preventDefault();
+
     setInputValue(e.target.elements.inputValue.value);
   };
+
   useEffect(() => {
     if (history.state) {
       setInputValue(history.state);
-      getMoviesByWord(history.state).then((data) => setFilms(data));
     }
   }, [history.state]);
   useEffect(() => {
